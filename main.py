@@ -5,19 +5,30 @@ class Arquivo:
     def __init__(self, nome):
         self.__nome = nome
         self.__tabela = None
+        self.__dados = None
 
-    def le_arq(self):
+    def _le_arq(self):
         self.__tabela = pd.read_csv(self.__nome)
 
     def gera_dados(self):
         tabela = self.__tabela
-        return tabela
+        dicionario = tabela.to_dict()
+
+        return dicionario
+
+    def montar_dados(self):
+        Arquivo._le_arq(self)
+        self.__dados = Arquivo.gera_dados(self)
+        for linha in range(299):
+            print(self.__dados["MATRICULA"][linha], self.__dados["COD_DISCIPLINA"][linha], self.__dados["NOTA"][linha],
+                  self.__dados["CARGA_HORARIA"][linha], self.__dados["ANO_SEMESTRE"][linha])
+        return self.__dados
 
 
 class Aluno:
-    def __init__(self, matricula, ano_semestre):
-        self.__matricula = matricula
-        self.__ano_semestre = ano_semestre
+    def __init__(self):
+        self.__matricula = []
+        self.__notas_aluno = []
 
     @property
     def matricula(self):
@@ -27,18 +38,14 @@ class Aluno:
     def matricula(self, mat):
         self.__matricula = mat
 
-    @property
-    def ano_semestre(self):
-        return self.__ano_semestre
-
-    @ano_semestre.setter
-    def ano_semestre(self, ano_semestre):
-        self.__ano_semestre = ano_semestre
+    def separa_aluno(self):
+        pass
 
 
 class Nota:
-    def __init__(self, nota):
+    def __init__(self, nota, ano_semestre):
         self.__nota = nota
+        self.__ano_semestre = ano_semestre
 
     @property
     def nota(self):
@@ -47,6 +54,14 @@ class Nota:
     @nota.setter
     def nota(self, nota):
         self.__nota = nota
+
+    @property
+    def ano_semestre(self):
+        return self.__ano_semestre
+
+    @ano_semestre.setter
+    def ano_semestre(self, ano_semestre):
+        self.__ano_semestre = ano_semestre
 
 
 class Disciplina:
@@ -85,6 +100,6 @@ class CodigoCurso:
 
 
 arq = Arquivo('notas.csv')
-arq.le_arq()
+arq.montar_dados()
 
 
